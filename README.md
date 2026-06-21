@@ -41,10 +41,10 @@ You can also export Markdown / standalone HTML and hand off to FallPDF via postM
 
 ```
 fallclaimpaper/
-├── index.html      # the deliverable · one file · IDB + BroadcastChannel
+├── index.html # the deliverable · one file · IDB + BroadcastChannel
 ├── README.md
-├── LICENSE         # MIT
-└── .nojekyll       # GitHub Pages serves raw (no Jekyll)
+├── LICENSE # MIT
+└── .nojekyll # GitHub Pages serves raw (no Jekyll)
 ```
 
 - Vanilla JS · no build · no framework · no CDN dependencies in the core shell
@@ -52,7 +52,7 @@ fallclaimpaper/
 - Bundle mesh: `BroadcastChannel('fall-claim')` (clients · advisers · firm · cases · documents) + `BroadcastChannel('fall-signal')` (hello/ping)
 - FallClaim valuation handoff: `postMessage({type:'fallclaim.valuation.request', caseId})`
 - T0: 14 canned domain rules (CFA cap · DBA cap · Part 36 cost consequences · CPR 32 · CPR 35 · etc.) · T3: BYOK Anthropic
-- Audit chain: Mansoor P3 · sha-256 chained · 6-year FCA CMR retention · 7-year SRA retention
+- Audit chain: P3 · sha-256 chained · 6-year FCA CMR retention · 7-year SRA retention
 - KONOMI shim · sovereign tier · inert
 - PWA manifest via `data:` URL
 - Aesthetic: oxblood / brass / cream / void (Libre Baskerville / Inter / IBM Plex Mono)
@@ -61,8 +61,8 @@ fallclaimpaper/
 
 ```js
 window.FALLCLAIMPAPER = {
-  state, render, audit, renderTemplate,
-  TEMPLATES_BUILTIN, T0_RULES, version, prime
+ state, render, audit, renderTemplate,
+ TEMPLATES_BUILTIN, T0_RULES, version, prime
 }
 ```
 
