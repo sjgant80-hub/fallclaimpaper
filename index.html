@@ -185,22 +185,19 @@ td.r{text-align:right;font-family:var(--mono)}
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -267,8 +264,7 @@ td.r{text-align:right;font-family:var(--mono)}
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -285,8 +281,7 @@ td.r{text-align:right;font-family:var(--mono)}
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -295,8 +290,7 @@ td.r{text-align:right;font-family:var(--mono)}
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -305,8 +299,7 @@ td.r{text-align:right;font-family:var(--mono)}
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -547,8 +540,7 @@ td.r{text-align:right;font-family:var(--mono)}
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -609,8 +601,7 @@ const TABS=[
  {id:'templates', name:'Templates', ico:'✆'},
  {id:'firm', name:'Firm', ico:'⌂'},
  {id:'audit', name:'Audit', ico:'◯'},
- {id:'help', name:'Q & A', ico:'?'},
-];
+ {id:'help', name:'Q & A', ico:'?'}];
 
 let state={
  active:'dashboard',
@@ -635,14 +626,11 @@ let state={
  valuationFromFallClaim:null,
  sectionOverrides:{},
  extraContext:{},
- chat:[],
- },
+ chat:[]},
  settings:{
  anthropicKey:'',
  auditChain:true,
- autoBroadcast:true,
- },
-};
+ autoBroadcast:true}};
 
 // ── util ──
 const $=(s,p=document)=>p.querySelector(s);
@@ -692,8 +680,7 @@ async function loadAll(){
  const [firms,advisers,clients,cases,documents,templates,audit,uiState]=await Promise.all([
  idbGetAll('firms'),idbGetAll('advisers'),idbGetAll('clients'),idbGetAll('cases'),
  idbGetAll('documents'),idbGetAll('templates'),idbGetAll('audit'),
- idbGet('state','ui'),
- ]);
+ idbGet('state','ui')]);
  state.firm=firms[0]||null;
  state.advisers=advisers;
  state.clients=clients;
@@ -966,7 +953,7 @@ TEMPLATES_BUILTIN.push({
 {id:'relevant-period', heading:'3. Relevant period',
  body:'The "relevant period" for the purposes of this offer is **21 days** beginning with the date this offer is received. If the offer is accepted within the relevant period, the Defendant will be liable for the Claimant\'s costs in accordance with CPR 36.13(1), to be assessed on the standard basis if not agreed.'},
 {id:'cost-consequences', heading:'4. Cost consequences', locked:true,
- body:'**If the Defendant accepts within the relevant period (CPR 36.13(1)):** the Defendant pays the Claimant\'s costs up to the date of acceptance, assessed on the standard basis if not agreed.\n\n**If the Defendant does not accept and the Claimant equals or beats this offer at trial (CPR 36.17(4)):** unless unjust, the court will order:\n(a) interest on the whole or part of any sum of money (excluding interest) awarded, at a rate not exceeding 10% above base rate for some or all of the period starting with the date on which the relevant period expired;\n(b) costs (including any recoverable pre-action costs) on the indemnity basis from the date on which the relevant period expired;\n(c) interest on those costs at a rate not exceeding 10% above base rate; and\n(d) an additional amount, not exceeding £75,000, calculated as 10% of the first £500,000 of damages and 5% of the next £500,000.'},
+ body:'**If the Defendant accepts within the relevant period (CPR 36.13(1)):** the Defendant pays the Claimant\'s costs up to the date of acceptance, assessed on the standard basis if not agreed.\n\n**If the Defendant does not accept and the Claimant equals or beats this offer at trial (CPR 36.17(4)):** unless unjust, the court will order:\n(a) interest on the whole or part of any sum of money (excluding interest) awarded, at a rate not exceeding 10% above base rate for some or all of the period starting with the date on which the relevant period expired;\n(b) costs (including any recoverable pre-action costs) on the indemnity basis from the date on which the relevant period expired;\n(c) interest on those costs at a rate not exceeding 10% above base rate; and\n(d) an additional amount, not exceeding TBA, calculated as 10% of the first TBA of damages and 5% of the next TBA.'},
 {id:'cru', heading:'5. Compensation Recovery Unit',
  body:'The Settlement Sum is inclusive of all sums for past loss of earnings, past care, past treatment costs and past travel. Recoverable benefits under the Social Security (Recovery of Benefits) Act 1997 shall be deducted from the relevant heads of past loss before payment, in accordance with section 8 of that Act, and a CRU certificate will be obtained before settlement.'},
 {id:'acceptance', heading:'6. Acceptance',
@@ -1416,11 +1403,11 @@ function interpolate(body,ctx){
  return String(v);
  });
 }
-function inlineMd(s){return s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/_([^_]+)_/g,'<em>$1</em>')}
+function inlineMd(s){return s.replace(/\*\*([^*]+)\*\*/g,'<strong>TBA</strong>').replace(/_([^_]+)_/g,'<em>TBA</em>')}
 function md2html(s){
  if(!s)return '';
  s=s.replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Client)<br>Date: ________________</div><div><div class="sig-line"></div>Signed (for {{firm.name}})<br>Date: ________________</div></div>');
- s=s.replace(/(^\|.+\|$\n?){2,}/gm,function(block){
+ s=s.replace(/(^\|.+\|$\n?){2}/gm,function(block){
  const lines=block.trim().split('\n');
  if(lines.length<2)return block;
  const headers=lines[0].split('|').slice(1,-1).map(c=>c.trim());
@@ -1484,7 +1471,7 @@ const T0_RULES=[
  {kw:['cfa','success fee','laspo','conditional fee'], a:'Under LASPO 2012 and the Conditional Fee Agreements Order 2013, CFA success fees are no longer recoverable from the losing defendant — they are paid by the client from damages. In **personal injury** claims the success fee is capped at **25%** of (a) general damages for PSLA plus (b) past pecuniary loss net of CRU recoverable benefits. Future pecuniary loss is excluded from the cap base.'},
  {kw:['dba','damages based','damages-based'], a:'Damages-Based Agreements (DBA Regs 2013) charge the client a % of damages recovered. Caps: **PI claims 25%** (in or out of court); **employment tribunals 35%**; **all other civil claims 50%**, inclusive of VAT and counsel\'s fees. The Ontario model applies — opponent\'s costs recovered are credited against the DBA Payment.'},
  {kw:['letter of claim','pre-action','protocol','loc','21 days','30 days','4 months'], a:'Pre-Action Protocol Letter of Claim response periods: **standard PI** — 21 days to acknowledge + 3 months to respond on liability; **MOJ portal (RTA/EL/PL)** — 1 business day electronic acknowledgment + 15 (RTA) or 30 (EL/PL) business days for liability decision; **clinical negligence** — 14 days to acknowledge + 4 months to respond.'},
- {kw:['part 36','cpr 36','offer to settle','21-day','21 day relevant'], a:'CPR Part 36 offers carry strict cost consequences. Claimant offer beaten at trial (CPR 36.17(4)): defendant pays indemnity costs from end of relevant period + interest up to base+10% + an "additional amount" up to £75,000 (10% of first £500k damages, 5% of next £500k). Defendant offer not beaten by claimant (CPR 36.17(3)): claimant pays defendant\'s costs from end of relevant period. Relevant period is min 21 days under CPR 36.5.'},
+ {kw:['part 36','cpr 36','offer to settle','21-day','21 day relevant'], a:'CPR Part 36 offers carry strict cost consequences. Claimant offer beaten at trial (CPR 36.17(4)): defendant pays indemnity costs from end of relevant period + interest up to base+10% + an "additional amount" up to TBA (10% of first TBAk damages, 5% of next TBAk). Defendant offer not beaten by claimant (CPR 36.17(3)): claimant pays defendant\'s costs from end of relevant period. Relevant period is min 21 days under CPR 36.5.'},
  {kw:['schedule of loss','quantum','ogden','interest','sol'], a:'Schedule of Loss must itemise (i) general damages (PSLA) by reference to JC Guidelines bracket; (ii) past pecuniary loss with evidence refs; (iii) interest — 2% on general from service to trial, half-special-account rate on past special damages from incident; (iv) future loss using Ogden Tables 8 with current discount rate (−0.25%). PD 16 para 4 requires service with Particulars in PI claims.'},
  {kw:['witness statement','cpr 32','statement of truth'], a:'CPR 32.4 / PD 32: witness statement is in **first person**, numbered paragraphs, in the witness\'s own words (not the lawyer\'s), separating facts within knowledge from those on information and belief (with source). Must include the prescribed **statement of truth** (PD 22). Exhibits referenced as "[WITNESS INITIALS]/1". Signed and dated.'},
  {kw:['expert','cpr 35','instructions to expert','single joint','sje'], a:'CPR 35.3 — expert\'s overriding duty is to the court and overrides any duty to the instructing party. CPR 35.10 — report must state substance of all material instructions and these are NOT privileged from disclosure. PD 35 §3.3 requires the prescribed statement of truth. Single Joint Expert (CPR 35.8): instructed by both parties, fee shared, even-handed.'},
@@ -1492,8 +1479,7 @@ const T0_RULES=[
  {kw:['cooling','cooling-off','14 day','consumer contracts','waiver'], a:'Consumer Contracts Regs 2013: where the agreement is made off-premises or at a distance, the consumer has 14 days to cancel without reason. To start work in the cooling-off period the firm needs an **express request on a durable medium** (reg 36). If service is fully performed within 14 days at consumer\'s request, right to cancel is **lost**.'},
  {kw:['without prejudice','wp','settlement','correspondence'], a:'"Without prejudice" privilege protects genuine settlement communications from being put before the court on the substantive issue. "Without prejudice save as to costs" (the Calderbank formula) reserves the right to refer to the offer on the question of costs once liability and quantum have been decided. Standard Letter of Claim offers should be marked WP-SATC.'},
  {kw:['bill of costs','assessment','precedent s','precedent n','cpr 47'], a:'Inter-partes detailed assessment under CPR 47. Bill follows Precedent S (electronic) or Precedent N format with phases aligned to Precedent H costs budget (pre-action, pleadings, CMC, disclosure, witness, expert, trial prep, trial). Must contain a signed certificate as to accuracy and indemnity principle.'},
- {kw:['n1','particulars of claim','pleading','cpr 16','pd 16'], a:'CPR 7 commences proceedings by N1 claim form; PD 16 sets Particulars of Claim content: concise statement of facts relied on, statutory and common-law duty, breach particulars, causation, particulars of injury (PI: with medical report attached PD 16 §4.3), schedule of loss (PI: PD 16 §4.2), interest claim under SCA 1981 s.35A / CCA 1984 s.69, statement of truth.'},
-];
+ {kw:['n1','particulars of claim','pleading','cpr 16','pd 16'], a:'CPR 7 commences proceedings by N1 claim form; PD 16 sets Particulars of Claim content: concise statement of facts relied on, statutory and common-law duty, breach particulars, causation, particulars of injury (PI: with medical report attached PD 16 §4.3), schedule of loss (PI: PD 16 §4.2), interest claim under SCA 1981 s.35A / CCA 1984 s.69, statement of truth.'}];
 
 function t0Answer(q){
  if(!q)return null;
@@ -2275,8 +2261,7 @@ const INPUTS={
  'lib-filter-case':el=>{state.ui.libFilterCase=el.value;persistUI();render()},
  'lib-filter-tpl':el=>{state.ui.libFilterTpl=el.value;persistUI();render()},
  'lib-filter-status':el=>{state.ui.libFilterStatus=el.value;persistUI();render()},
- 'chat-q':()=>{},
-};
+ 'chat-q':()=>{}};
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // EXPORT helpers
