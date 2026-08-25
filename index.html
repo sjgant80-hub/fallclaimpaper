@@ -1722,6 +1722,11 @@ ${ks.length?ks.map(k=>{
  <span class="tag muted">${esc(k.feeArrangement||'cfa')}</span>
  ${k.liability&&k.liability.admitted?'<span class="tag green">liability admitted</span>':''}
  </div>
+ <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+ <span style="font-size:10px;color:var(--cream-muted);font-family:var(--mono)">awaited:</span>
+ ${(k.awaitedDocuments||[]).map(a=>`<span class="tag" style="cursor:pointer" title="click to mark received / no longer awaited" data-action="awaited-remove" data-id="${k.id}" data-aid="${esc(a.id)}">${esc(a.title)} &times;</span>`).join('')||'<span style="font-size:10px;color:var(--cream-muted)">none</span>'}
+ <button class="btn sm ghost" data-action="awaited-add" data-id="${k.id}" style="padding:1px 7px;font-size:10px">+ awaited</button>
+ </div>
  </div>
  <div style="text-align:right">
  <div style="font-family:var(--mono);font-size:11px;color:var(--brass)">est. £${fmt(k.valuation&&k.valuation.totalEstimate||0)}</div>
@@ -2208,6 +2213,10 @@ const ACTIONS={
  'client-generate':el=>{state.ui.selectedClientId=el.dataset.id;state.active='generate';persistUI();render()},
  'case-new':()=>{openModal('case-new')},
  'case-edit':el=>{state._editingCaseId=el.dataset.id;openModal('case-edit')},
+ // documents-awaited: the case names the documents it still needs. This IS the docsAwaited signal
+ // fallbrain derives from — and it is useful standalone: the register of what each case waits on.
+ 'awaited-add':async el=>{const k=state.cases.find(x=>x.id===el.dataset.id);if(!k)return;const t=prompt('Document awaited (e.g. GP records, engineer’s report):');if(!t||!t.trim())return;k.awaitedDocuments=k.awaitedDocuments||[];k.awaitedDocuments.push({id:'aw_'+crypto.randomUUID().slice(0,8),title:t.trim(),addedAt:now()});k.updatedAt=now();await idbPut('cases',k);render();toast('awaited document recorded')},
+ 'awaited-remove':async el=>{const k=state.cases.find(x=>x.id===el.dataset.id);if(!k||!Array.isArray(k.awaitedDocuments))return;k.awaitedDocuments=k.awaitedDocuments.filter(a=>a.id!==el.dataset.aid);k.updatedAt=now();await idbPut('cases',k);render();toast('marked received')},
  'case-generate':el=>{const k=state.cases.find(x=>x.id===el.dataset.id);if(k){state.ui.selectedCaseId=k.id;state.ui.selectedClientId=k.clientId;state.active='generate';persistUI();render()}},
  'adv-new':()=>{openModal('adv-new')},
  'adv-edit':el=>{state._editingAdvId=el.dataset.id;openModal('adv-edit')},
@@ -2291,7 +2300,7 @@ th{background:#e6dec6;color:#3a1e10;text-align:left}
 .placeholder-empty{background:#ffe9b3;color:#8b1a1a;padding:0 4px;border-radius:2px;font-weight:700}
 hr{border:none;border-top:1px solid #cfc7b3;margin:14px 0}
 </style></head><body>${inner}
-
+
 </body></html>`;
 }
 
